@@ -71,6 +71,36 @@ namespace FerieWPFApp.ViewModels
         {
             PackingLists = new ObservableCollection<PackingList>();
             PackingListTemplates = new ObservableCollection<PackingList>();
+
+            var festivalItems = new ObservableCollection<Item>()
+            {
+                new ("Tent", 1),
+                new ("Sleeping bag", 1),
+                new ("Sleeping mat", 1),
+                new ("Clothes", 1),
+                new ("Toiletries", 1),
+                new ("Food", 1),
+                new ("Water", 1),
+                new ("Torch", 1),
+                new ("First aid kit", 1),
+            };
+            PackingListTemplates.Add(new PackingList("Festival", festivalItems));
+
+            var SkiferieItems = new ObservableCollection<Item>()
+            {
+                new ("Skis", 1),
+                new ("Ski boots", 1),
+                new ("Ski poles", 1),
+                new ("Ski helmet", 1),
+                new ("Ski goggles", 1),
+                new ("Ski gloves", 1),
+                new ("Ski socks", 1),
+                new ("Ski pants", 1)
+            };
+           
+            PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
+            
+            PackingListTemplates.Add(new PackingList("Storbyferie"));
         }
 
         public ObservableCollection<PackingList> PackingLists
@@ -99,7 +129,10 @@ namespace FerieWPFApp.ViewModels
 
         void ExecuteCreatePackingListCommand()
         {
-            PackingLists.Add(CurrentPackingListTemplate.Clone());
+            // add new packing list as a clone of the current selected template
+            var newPackingList = CurrentPackingListTemplate.Clone();
+            newPackingList.Items = CurrentPackingListTemplate.Items;
+            PackingLists.Add(newPackingList);
         }
 
         void ExecuteCreateTemplateCommand()

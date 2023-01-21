@@ -9,7 +9,9 @@ public class PackingList : BindableBase
     private string name = "";
     private IEnumerable<Item> items;
 
-    public PackingList() { }
+    public PackingList()
+    {
+        Items = items; }
 
     public PackingList(string name)
     {
@@ -24,7 +26,7 @@ public class PackingList : BindableBase
     }
     public PackingList Clone()
     {
-        return this.MemberwiseClone() as PackingList;
+        return new PackingList(this.Name, this.Items);
     }
 
     public string Name

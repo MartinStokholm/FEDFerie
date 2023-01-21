@@ -16,6 +16,11 @@ public class Item : BindableBase
         Quantity = quantity;
         IsPacked = isPacked;
     }
+
+    public Item Clone()
+    {
+        return this.MemberwiseClone() as Item;
+    }
     
     public string Name
     {

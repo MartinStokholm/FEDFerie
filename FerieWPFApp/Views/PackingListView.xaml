@@ -11,8 +11,8 @@
             <Label Content="Name: " />
             <TextBox Text="{Binding CurrentPackingList.Name}" />
         </WrapPanel>
-        
-        <DataGrid ItemsSource="{Binding CurrentItems}"
+
+        <DataGrid ItemsSource="{Binding CurrentPackingList.Items}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
             <DataGrid.Columns>

@@ -15,17 +15,17 @@ namespace FerieWPFApp.Data
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
             TextReader reader = new StreamReader(fileName);
             // Deserialize all the debtors.
-            var debtors = (ObservableCollection<PackingList>)serializer.Deserialize(reader);
+            var packingLists = (ObservableCollection<PackingList>)serializer.Deserialize(reader);
             reader.Close();
-            return debtors;
+            return packingLists;
         }
-        internal static void SaveFile(string fileName, ObservableCollection<PackingList> debtors)
+        internal static void SaveFile(string fileName, ObservableCollection<PackingList> packingLists)
         {
             // Create an instance of the XmlSerializer class and specify the type of object to serialize.
             XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
             TextWriter writer = new StreamWriter(fileName);
             // Serialize all the debtors.
-            serializer.Serialize(writer, debtors);
+            serializer.Serialize(writer, packingLists);
             writer.Close();
         }
     }
