@@ -99,7 +99,7 @@ namespace FerieWPFApp.ViewModels
 
         void ExecuteCreatePackingListCommand()
         {
-            PackingLists.Add(CurrentPackingListTemplate);
+            PackingLists.Add(CurrentPackingListTemplate.Clone());
         }
 
         void ExecuteCreateTemplateCommand()

@@ -7,13 +7,14 @@
         mc:Ignorable="d"
         Title="{Binding Title}" Height="800" Width="400">
     <StackPanel>
-            
-        <Label Content="{Binding Name}" />
-
+        <WrapPanel>
+            <Label Content="Name: " />
+            <TextBox Text="{Binding CurrentPackingList.Name}" />
+        </WrapPanel>
+        
         <DataGrid ItemsSource="{Binding CurrentItems}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
-
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
@@ -21,7 +22,7 @@
                 <DataGridTemplateColumn Header="Packed?">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox IsChecked="{Binding IsPacked, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
