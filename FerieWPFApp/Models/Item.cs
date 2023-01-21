@@ -17,27 +17,27 @@ public class Item : BindableBase
         IsPacked = isPacked;
     }
 
-    public Item Clone()
+    public Item? Clone()
     {
         return this.MemberwiseClone() as Item;
     }
     
     public string Name
     {
-        get { return name; }
-        set { SetProperty(ref name, value); }
+        get => name;
+        set => SetProperty(ref name, value);
     }
 
     public int Quantity
     {
-        get { return quantity; }
-        set { SetProperty(ref quantity, value); }
+        get => quantity;
+        set => SetProperty(ref quantity, value);
     }
 
     public bool IsPacked
     {
-        get { return isPacked; }
-        set { SetProperty(ref isPacked, value); }
+        get => isPacked;
+        set => SetProperty(ref isPacked, value);
     }
 
 }

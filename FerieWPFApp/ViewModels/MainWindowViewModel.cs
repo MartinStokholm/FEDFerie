@@ -1,17 +1,13 @@
 ﻿using Prism.Commands;
 using System;
-using System.Collections.Generic;
 using FerieWPFApp.Models;
 using FerieWPFApp.Views;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using FerieWPFApp.Data;
 using System.Windows;
 using Microsoft.Win32;
-using Newtonsoft.Json;
-using Formatting = System.Xml.Formatting;
 
 namespace FerieWPFApp.ViewModels
 {
@@ -41,15 +37,15 @@ namespace FerieWPFApp.ViewModels
         DelegateCommand _OpenFileCommand;
         
         public DelegateCommand CreatePackingListCommand =>
-            createPackingListCommand ?? (createPackingListCommand = new DelegateCommand(ExecuteCreatePackingListCommand));
+            createPackingListCommand ??= new DelegateCommand(ExecuteCreatePackingListCommand);
 
         public DelegateCommand CreateTemplateCommand =>
-            createTemplateCommand ?? (createTemplateCommand = new DelegateCommand(ExecuteCreateTemplateCommand));
+            createTemplateCommand ??= new DelegateCommand(ExecuteCreateTemplateCommand);
 
         public DelegateCommand OpenPackingListCommand =>
-            openPackingListCommand ?? (openPackingListCommand = new DelegateCommand(ExecuteOpenPackingListCommand));
+            openPackingListCommand ??= new DelegateCommand(ExecuteOpenPackingListCommand);
         public DelegateCommand OpenTemplateCommand =>
-            openTemplateCommand ?? (openTemplateCommand = new DelegateCommand(ExecuteOpenTemplateCommand));
+            openTemplateCommand ??= new DelegateCommand(ExecuteOpenTemplateCommand);
 
         public DelegateCommand NewFileCommand {
             get { return _NewFileCommand = new DelegateCommand(ExecuteNewFileCommand); }
@@ -59,81 +55,81 @@ namespace FerieWPFApp.ViewModels
             get { return _OpenFileCommand = new DelegateCommand(ExecuteOpenFileCommand); }
         }
         
-        public DelegateCommand SaveAsCommand {
-            get { return _SaveAsCommand ?? (_SaveAsCommand = new DelegateCommand(ExecuteSaveAsCommand)); }
-        }
-        
-        public DelegateCommand SaveCommand {
-            get {
-                return _SaveCommand ?? (_SaveCommand = new DelegateCommand(ExecuteSaveFileCommand, CanExecuteSaveFileCommand)
-                    .ObservesProperty(() => PackingLists.Count));
-            }
-        }
+        public DelegateCommand SaveAsCommand => _SaveAsCommand = _SaveAsCommand ?? new DelegateCommand(ExecuteSaveAsCommand);
+
+        public DelegateCommand SaveCommand =>
+            _SaveCommand = _SaveCommand ?? new DelegateCommand(ExecuteSaveFileCommand, CanExecuteSaveFileCommand)
+                .ObservesProperty(() => PackingLists.Count);
 
         public MainWindowViewModel()
         {
             PackingLists = new ObservableCollection<PackingList>();
             PackingListTemplates = new ObservableCollection<PackingList>();
 
-            //var festivalItems = new ObservableCollection<Item>()
-            //{
-            //    new ("Tent", 1),
-            //    new ("Sleeping bag", 1),
-            //    new ("Sleeping mat", 1),
-            //    new ("Clothes", 1),
-            //    new ("Toiletries", 1),
-            //    new ("Food", 1),
-            //    new ("Water", 1),
-            //    new ("Torch", 1),
-            //    new ("First aid kit", 1),
-            //};
-            //PackingListTemplates.Add(new PackingList("Festival", festivalItems));
+            var festivalItems = new ObservableCollection<Item>()
+            {
+                new ("Tent", 1),
+                new ("Sleeping bag", 1),
+                new ("Sleeping mat", 1),
+                new ("Clothes", 1),
+                new ("Toiletries", 1),
+                new ("Food", 1),
+                new ("Water", 1),
+                new ("Torch", 1),
+                new ("First aid kit", 1),
+            };
+            PackingListTemplates.Add(new PackingList("Festival", festivalItems));
 
-            //var SkiferieItems = new ObservableCollection<Item>()
-            //{
-            //    new ("Skis", 1),
-            //    new ("Ski boots", 1),
-            //    new ("Ski poles", 1),
-            //    new ("Ski helmet", 1),
-            //    new ("Ski goggles", 1),
-            //    new ("Ski gloves", 1),
-            //    new ("Ski socks", 1),
-            //    new ("Ski pants", 1)
-            //};
-           
-            //PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
-            
-            //PackingListTemplates.Add(new PackingList("Storbyferie"));
+            var SkiferieItems = new ObservableCollection<Item>()
+            {
+                new ("Skis", 1),
+                new ("Ski boots", 1),
+                new ("Ski poles", 1),
+                new ("Ski helmet", 1),
+                new ("Ski goggles", 1),
+                new ("Ski gloves", 1),
+                new ("Ski socks", 1),
+                new ("Ski pants", 1)
+            };
+
+            PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
+
+            PackingListTemplates.Add(new PackingList("Storbyferie"));
         }
 
         public ObservableCollection<PackingList> PackingLists
         {
-            get { return packingLists; }
-            set { SetProperty(ref packingLists, value); }
+            get => packingLists;
+            set => SetProperty(ref packingLists, value);
         }
         
         public PackingList CurrentPackingList
         {
-            get { return currentPackingList; }
-            set { SetProperty(ref currentPackingList, value); }
+            get => currentPackingList;
+            set => SetProperty(ref currentPackingList, value);
         }
 
         public ObservableCollection<PackingList> PackingListTemplates
         {
-            get { return packingListTemplates; }
-            set { SetProperty(ref packingListTemplates, value); }
+            get => packingListTemplates;
+            set => SetProperty(ref packingListTemplates, value);
         }
 
         public PackingList CurrentPackingListTemplate
         {
-            get { return currentPackingListTemplate; }
-            set { SetProperty(ref currentPackingListTemplate, value); }
+            get => currentPackingListTemplate;
+            set => SetProperty(ref currentPackingListTemplate, value);
         }
 
         void ExecuteCreatePackingListCommand()
         {
-            // add new packing list as a clone of the current selected template
-            var newPackingList = CurrentPackingListTemplate.Clone();
+            // add new packing list as a copy of the current selected template
+            var newPackingList = new PackingList
+            {
+                Name = CurrentPackingListTemplate.Name,
+                Items = CurrentPackingListTemplate.Items
+            };
+            
             PackingLists.Add(newPackingList);
         }
 
@@ -168,7 +164,7 @@ namespace FerieWPFApp.ViewModels
 
         public string FileName
         {
-            get { return fileName; }
+            get => fileName;
             set
             {
                 SetProperty(ref fileName, value);
@@ -176,11 +172,8 @@ namespace FerieWPFApp.ViewModels
             }
         }
 
-        public string Title
-        {
-            get { return FileName + " - " + AppTitle; }
-        }
-        
+        public string Title => FileName + " - " + AppTitle;
+
         // Commands for file handling
         private void ExecuteNewFileCommand()
         {

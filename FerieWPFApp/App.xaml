@@ -12,14 +12,16 @@
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Foreground" Value="Black" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
         </Style>
 
         <!--DataGrid style-->
         <Style TargetType="{x:Type DataGrid}">
             <Setter Property="Foreground" Value="Black" />
             <Setter Property="Background" Value="White" />
-            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontSize" Value="22"/>
         </Style>
 
         <!--Label style-->

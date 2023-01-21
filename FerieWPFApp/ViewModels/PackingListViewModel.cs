@@ -1,5 +1,4 @@
 ﻿using FerieWPFApp.Models;
-using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 
@@ -20,19 +19,19 @@ public class PackingListViewModel : BindableBase
     
     public string Title
     {
-        get { return title; }
-        set { SetProperty(ref title, value); }
+        get => title;
+        set => SetProperty(ref title, value);
     }
 
     public PackingList CurrentPackingList
     {
-        get { return currentPackingList; }
-        set { SetProperty(ref currentPackingList, value); }
+        get => currentPackingList;
+        set => SetProperty(ref currentPackingList, value);
     }
 
     public ObservableCollection<Item> CurrentItems
     {
-        get { return items ?? (items = new ObservableCollection<Item>()); }
-        set { SetProperty(ref items, value); }
+        get => items = items ?? new ObservableCollection<Item>();
+        set => SetProperty(ref items, value);
     }
 }

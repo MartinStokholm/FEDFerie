@@ -18,42 +18,42 @@ public class TemplateViewModel : BindableBase
     {
         Title = title;
         CurrentTemplate = template;
-        CurrentItems = (ObservableCollection<Item>)template.Items;
+        CurrentItems = template.Items;
     }
 
     public string Title
     {
-        get { return title; }
-        set { SetProperty(ref title, value); }
+        get => title;
+        set => SetProperty(ref title, value);
     }
 
     public PackingList CurrentTemplate
     {
-        get { return currentTemplate; }
-        set { SetProperty(ref currentTemplate, value); }
+        get => currentTemplate;
+        set => SetProperty(ref currentTemplate, value);
     }
 
     public ObservableCollection<Item> CurrentItems
     {
-        get { return items = items ?? new ObservableCollection<Item>(); }
-        set { SetProperty(ref items, value); }
+        get => items;
+        set => SetProperty(ref items, value);
     }
 
     public string NewItemName
     {
-        get { return newItemName; }
-        set { SetProperty(ref newItemName, value); }
+        get => newItemName;
+        set => SetProperty(ref newItemName, value);
     }
 
     public int NewItemQuantity
     {
-        get { return newItemQuantity; }
-        set { SetProperty(ref newItemQuantity, value); }
+        get => newItemQuantity;
+        set => SetProperty(ref newItemQuantity, value);
     }
 
     private DelegateCommand addItemCommand;
     public DelegateCommand AddItemCommand =>
-        addItemCommand ?? (addItemCommand = new DelegateCommand(ExecuteAddItemCommand));
+        addItemCommand = addItemCommand ?? new DelegateCommand(ExecuteAddItemCommand);
     void ExecuteAddItemCommand()
     {
         CurrentItems.Add(new Item(NewItemName, NewItemQuantity));

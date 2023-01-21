@@ -5,16 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FerieWPFApp.Views"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="800" Width="400">
+        Title="{Binding Title}" Height="auto" Width="400">
     <StackPanel>
         <WrapPanel>
             <Label Content="Name: " />
-            <TextBox Text="{Binding CurrentPackingList.Name}" />
+            <TextBox Text="{Binding CurrentPackingList.Name, UpdateSourceTrigger=PropertyChanged}" />
         </WrapPanel>
 
         <DataGrid ItemsSource="{Binding CurrentPackingList.Items}"
                   AutoGenerateColumns="False"
-                  CanUserAddRows="False">
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="true"
+                  >
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
@@ -22,7 +26,7 @@
                 <DataGridTemplateColumn Header="Packed?">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsPacked, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox IsChecked="{Binding IsPacked, UpdateSourceTrigger=PropertyChanged }"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

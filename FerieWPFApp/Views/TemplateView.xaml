@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FerieWPFApp.Views"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="450" Width="800">
+        Title="{Binding Title}" Height="auto" Width="800">
     <StackPanel>
         <WrapPanel DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center">
             <Label Content="Template Name:" />
@@ -14,7 +14,7 @@
                      Margin="5"
                      MinHeight="25"
                      MinWidth="75"
-                     Text="{Binding CurrentTemplate.Name}" 
+                     Text="{Binding CurrentTemplate.Name, UpdateSourceTrigger=PropertyChanged}" 
             />
             
         </WrapPanel>
@@ -47,15 +47,15 @@
             />
 
         </WrapPanel>
-        
-        <DataGrid ItemsSource="{Binding CurrentItems}"
+
+        <DataGrid ItemsSource="{Binding CurrentItems, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   HorizontalAlignment="Center">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
        
