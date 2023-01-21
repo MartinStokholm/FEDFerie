@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using Prism.Mvvm;
 
 namespace FerieWPFApp.Models;
@@ -7,33 +6,38 @@ namespace FerieWPFApp.Models;
 public class PackingList : BindableBase
 {
     private string name = "";
-    private List<Item> items = new();
+    private ObservableCollection<Item>? items;
 
     public PackingList()
     {
-       
     }
-    
-    public PackingList(string name, List<Item> items)
+
+    public PackingList(string name)
+    {
+        Name = name;
+        Items = new ObservableCollection<Item>();
+    }
+   
+    public PackingList(string name, ObservableCollection<Item> items)
     {
         Name = name;
         Items = items; 
     }
-    public PackingList Clone()
+    public PackingList? Clone()
     {
-        return this.MemberwiseClone() as PackingList;
+       return this.MemberwiseClone() as PackingList;
     }
 
     public string Name
     {
-        get { return name; }
-        set { SetProperty(ref name, value); }
+        get => name;
+        set => SetProperty(ref name, value);
     }
 
-    public List<Item> Items
+    public ObservableCollection<Item> Items
     {
-        get { return items; }
-        set { SetProperty(ref items, value); }
+        get => items;
+        set => SetProperty(ref items, value);
     }
 
    

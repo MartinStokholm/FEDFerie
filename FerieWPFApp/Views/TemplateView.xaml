@@ -1,0 +1,63 @@
+﻿<Window x:Class="FerieWPFApp.Views.TemplateView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FerieWPFApp.Views"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="auto" Width="800">
+    <StackPanel>
+        <WrapPanel DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center">
+            <Label Content="Template Name:" />
+            
+            <TextBox x:Name="TemplateName" 
+                     Margin="5"
+                     MinHeight="25"
+                     MinWidth="75"
+                     Text="{Binding CurrentTemplate.Name, UpdateSourceTrigger=PropertyChanged}" 
+            />
+            
+        </WrapPanel>
+
+        <WrapPanel DockPanel.Dock="Top" Margin="10" HorizontalAlignment="Center">
+            <Label Content="Name:" />
+            <TextBox
+                Text="{Binding NewItemName, UpdateSourceTrigger=PropertyChanged}" 
+                Margin="5"
+                MinHeight="25"
+                MinWidth="75"
+                Style="{StaticResource ResourceKey=CustomTextBoxStyle}"
+            />
+            <Label Content="Quantity:" />
+            <TextBox
+                Text="{Binding NewItemQuantity, UpdateSourceTrigger=PropertyChanged}" 
+                Margin="5"
+                MinHeight="25"
+                MinWidth="75"
+                Style="{StaticResource ResourceKey=CustomTextBoxStyle}"
+            />
+
+            <Button
+                Content="Add item"
+                Command="{Binding AddItemCommand}" 
+                Margin="5" 
+                MinHeight="25" 
+                MinWidth="75"
+                Style="{StaticResource ResourceKey=CustomButtonStyle}"
+            />
+
+        </WrapPanel>
+
+        <DataGrid ItemsSource="{Binding CurrentItems, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  HorizontalAlignment="Center">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+       
+    </StackPanel>
+</Window>

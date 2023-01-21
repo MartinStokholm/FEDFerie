@@ -1,6 +1,5 @@
 ﻿using Prism.Commands;
 using System;
-using System.Collections.Generic;
 using FerieWPFApp.Models;
 using FerieWPFApp.Views;
 using Prism.Mvvm;
@@ -17,39 +16,155 @@ namespace FerieWPFApp.ViewModels
         private readonly string AppTitle = "FerieWPFApp";
         private ObservableCollection<PackingList> packingLists;
         private PackingList currentPackingList;
+
+        private ObservableCollection<PackingList> packingListTemplates;
+        private PackingList currentPackingListTemplate;
+
+        // for file handling
         private string filePath = "";
         private string fileName = "No file loaded";
+        private string createPackingListName = "";
+
+        // Delegates for commands
+        DelegateCommand createPackingListCommand;
+        DelegateCommand createTemplateCommand;
+        DelegateCommand openPackingListCommand;
+        DelegateCommand openTemplateCommand;
         
+        DelegateCommand _NewFileCommand;
+        DelegateCommand _SaveCommand;
+        DelegateCommand _SaveAsCommand;
+        DelegateCommand _OpenFileCommand;
+        
+        public DelegateCommand CreatePackingListCommand =>
+            createPackingListCommand ??= new DelegateCommand(ExecuteCreatePackingListCommand);
+
+        public DelegateCommand CreateTemplateCommand =>
+            createTemplateCommand ??= new DelegateCommand(ExecuteCreateTemplateCommand);
+
+        public DelegateCommand OpenPackingListCommand =>
+            openPackingListCommand ??= new DelegateCommand(ExecuteOpenPackingListCommand);
+        public DelegateCommand OpenTemplateCommand =>
+            openTemplateCommand ??= new DelegateCommand(ExecuteOpenTemplateCommand);
+
+        public DelegateCommand NewFileCommand {
+            get { return _NewFileCommand = new DelegateCommand(ExecuteNewFileCommand); }
+        }
+        
+        public DelegateCommand OpenFileCommand {
+            get { return _OpenFileCommand = new DelegateCommand(ExecuteOpenFileCommand); }
+        }
+        
+        public DelegateCommand SaveAsCommand => _SaveAsCommand = _SaveAsCommand ?? new DelegateCommand(ExecuteSaveAsCommand);
+
+        public DelegateCommand SaveCommand =>
+            _SaveCommand = _SaveCommand ?? new DelegateCommand(ExecuteSaveFileCommand, CanExecuteSaveFileCommand)
+                .ObservesProperty(() => PackingLists.Count);
+
         public MainWindowViewModel()
         {
             PackingLists = new ObservableCollection<PackingList>();
-            var pants = new Item("pants", 2);
-            var shoes = new Item("shoes", 1);
+            PackingListTemplates = new ObservableCollection<PackingList>();
 
-            var items = new List<Item>();
-            items.Add(pants);
-            items.Add(shoes);
+            var festivalItems = new ObservableCollection<Item>()
+            {
+                new ("Tent", 1),
+                new ("Sleeping bag", 1),
+                new ("Sleeping mat", 1),
+                new ("Clothes", 1),
+                new ("Toiletries", 1),
+                new ("Food", 1),
+                new ("Water", 1),
+                new ("Torch", 1),
+                new ("First aid kit", 1),
+            };
+            PackingListTemplates.Add(new PackingList("Festival", festivalItems));
 
-            PackingLists.Add(new PackingList("Festival", items));
-            PackingLists.Add(new PackingList("Summer on the Beach", items));
-            PackingLists.Add(new PackingList("Camping", items));
+            var SkiferieItems = new ObservableCollection<Item>()
+            {
+                new ("Skis", 1),
+                new ("Ski boots", 1),
+                new ("Ski poles", 1),
+                new ("Ski helmet", 1),
+                new ("Ski goggles", 1),
+                new ("Ski gloves", 1),
+                new ("Ski socks", 1),
+                new ("Ski pants", 1)
+            };
 
-            CurrentPackingList = PackingLists[0];
+            PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
+
+            PackingListTemplates.Add(new PackingList("Storbyferie"));
         }
+
+        public ObservableCollection<PackingList> PackingLists
+        {
+            get => packingLists;
+            set => SetProperty(ref packingLists, value);
+        }
+        
         public PackingList CurrentPackingList
         {
-            get { return currentPackingList; }
-            set { SetProperty(ref currentPackingList, value); }
+            get => currentPackingList;
+            set => SetProperty(ref currentPackingList, value);
         }
 
-        public ObservableCollection<PackingList> PackingLists 
+        public ObservableCollection<PackingList> PackingListTemplates
         {
-            get { return packingLists; }
-            set { SetProperty(ref packingLists, value); }
+            get => packingListTemplates;
+            set => SetProperty(ref packingListTemplates, value);
         }
+
+        public PackingList CurrentPackingListTemplate
+        {
+            get => currentPackingListTemplate;
+            set => SetProperty(ref currentPackingListTemplate, value);
+        }
+
+        void ExecuteCreatePackingListCommand()
+        {
+            // add new packing list as a copy of the current selected template
+            var newPackingList = new PackingList
+            {
+                Name = CurrentPackingListTemplate.Name,
+                Items = CurrentPackingListTemplate.Items
+            };
+            
+            PackingLists.Add(newPackingList);
+        }
+
+        void ExecuteCreateTemplateCommand()
+        {
+            var newTemplate = new PackingList("template" + PackingListTemplates.Count);
+            PackingListTemplates.Add(newTemplate);
+        }
+
+        void ExecuteOpenPackingListCommand()
+        {
+            
+            var vm = new PackingListViewModel("Packing list", CurrentPackingList);
+
+            var dlg = new PackingListView
+            {
+                DataContext = vm
+            };
+            dlg.ShowDialog();
+        }
+        void ExecuteOpenTemplateCommand()
+        {
+
+            var vm = new TemplateViewModel("Template", CurrentPackingListTemplate);
+
+            var dlg = new TemplateView
+            {
+                DataContext = vm
+            };
+            dlg.ShowDialog();
+        }
+
         public string FileName
         {
-            get { return fileName; }
+            get => fileName;
             set
             {
                 SetProperty(ref fileName, value);
@@ -57,57 +172,10 @@ namespace FerieWPFApp.ViewModels
             }
         }
 
-        public string Title
-        {
-            get { return FileName + " - " + AppTitle; }
-        }
-        
-        private DelegateCommand createPackingListCommand;
-        public DelegateCommand CreatePackingListCommand=>
-            createPackingListCommand ?? (createPackingListCommand = new DelegateCommand(ExecuteCreatePackingListCommand));
-        void ExecuteCreatePackingListCommand()
-        {
-            var newPackingList = new PackingList();
-            var createPackingListViewModel = new CreatePackingListViewModel("Create new Packing list", newPackingList);
+        public string Title => FileName + " - " + AppTitle;
 
-            var dlg = new CreatePackingListView
-            {
-                DataContext = createPackingListViewModel
-            };
-            if (dlg.ShowDialog() == true)
-            {
-                PackingLists.Add(newPackingList);
-                CurrentPackingList = newPackingList;
-            }
-        }
-
-        private DelegateCommand openPackingListCommand;
-        public DelegateCommand OpenPackingListCommand =>
-            openPackingListCommand ?? (openPackingListCommand = new DelegateCommand(ExecuteOpenPackingListCommand));
-        
-        void ExecuteOpenPackingListCommand()
-        {
-            var tempPackingList = CurrentPackingList.Clone();
-            var vm = new ViewPackingListViewModel("Packing list", tempPackingList);
-
-            var dlg = new ViewPackingListView
-            {
-                DataContext = vm
-            };
-            if (dlg.ShowDialog() == true)
-            {
-                CurrentPackingList.Items = tempPackingList.Items;
-                
-            }
-        }
-
-        DelegateCommand _NewFileCommand;
-        public DelegateCommand NewFileCommand
-        {
-            get { return _NewFileCommand = new DelegateCommand(NewFileCommand_Execute); }
-        }
-
-        private void NewFileCommand_Execute()
+        // Commands for file handling
+        private void ExecuteNewFileCommand()
         {
             MessageBoxResult res = MessageBox.Show("Any unsaved data will be lost. Are you sure you want to initiate a new file?", "Warning",
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
@@ -115,22 +183,15 @@ namespace FerieWPFApp.ViewModels
             {
                 PackingLists.Clear();
                 FileName = "";
-
             }
         }
-
-        DelegateCommand _OpenFileCommand;
-        public DelegateCommand OpenFileCommand
-        {
-            get { return _OpenFileCommand = new DelegateCommand(OpenFileCommand_Execute); }
-        }
-
-        private void OpenFileCommand_Execute()
+        
+        private void ExecuteOpenFileCommand()
         {
             var dialog = new OpenFileDialog
             {
-                Filter = "Debtor documents|*.dbt|All Files|*.*",
-                DefaultExt = "dbt"
+                Filter = "json|*.json|All Files|*.*",
+                DefaultExt = "json"
             };
             if (filePath == "")
                 dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -143,7 +204,8 @@ namespace FerieWPFApp.ViewModels
                 FileName = Path.GetFileName(filePath);
                 try
                 {
-                    PackingLists = Repository.ReadFile(filePath);
+                    PackingLists.Clear();
+                    PackingListTemplates = Repository.ReadFile(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -152,18 +214,12 @@ namespace FerieWPFApp.ViewModels
             }
         }
 
-        DelegateCommand _SaveAsCommand;
-        public DelegateCommand SaveAsCommand
-        {
-            get { return _SaveAsCommand ?? (_SaveAsCommand = new DelegateCommand(SaveAsCommand_Execute)); }
-        }
-
-        private void SaveAsCommand_Execute()
+        private void ExecuteSaveAsCommand()
         {
             var dialog = new SaveFileDialog
             {
-                Filter = "Debtor documents|*.dbt|All Files|*.*",
-                DefaultExt = "dbt"
+                Filter = "json|*.json|All Files|*.*",
+                DefaultExt = "json"
             };
             if (filePath == "")
                 dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -177,32 +233,23 @@ namespace FerieWPFApp.ViewModels
                 SaveFile();
             }
         }
-
-        DelegateCommand _SaveCommand;
-        public DelegateCommand SaveCommand
-        {
-            get
-            {
-                return _SaveCommand ?? (_SaveCommand = new DelegateCommand(SaveFileCommand_Execute, SaveFileCommand_CanExecute)
-                  .ObservesProperty(() => PackingLists.Count));
-            }
-        }
-
-        private void SaveFileCommand_Execute()
+        
+        private void ExecuteSaveFileCommand()
         {
             SaveFile();
         }
 
-        private bool SaveFileCommand_CanExecute()
+        private bool CanExecuteSaveFileCommand()
         {
-            return FileName != "" && PackingLists.Count > 0;
+            return FileName != "" && PackingListTemplates.Count > 0;
         }
 
         private void SaveFile()
         {
             try
             {
-                Repository.SaveFile(filePath, PackingLists);
+                Repository.SaveFile(filePath, PackingListTemplates);
+
             }
             catch (Exception ex)
             {
