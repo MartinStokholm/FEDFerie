@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Prism.Mvvm;
 
 namespace FerieWPFApp.Models;
@@ -7,7 +8,7 @@ namespace FerieWPFApp.Models;
 public class PackingList : BindableBase
 {
     private string name = "";
-    private IEnumerable<Item> items;
+    private ObservableCollection<Item> items;
 
     public PackingList()
     {
@@ -19,7 +20,7 @@ public class PackingList : BindableBase
         Items = items;
     }
    
-    public PackingList(string name, IEnumerable<Item> items)
+    public PackingList(string name, ObservableCollection<Item> items)
     {
         Name = name;
         Items = items; 
@@ -35,7 +36,7 @@ public class PackingList : BindableBase
         set { SetProperty(ref name, value); }
     }
 
-    public IEnumerable<Item> Items
+    public ObservableCollection<Item> Items
     {
         get { return items; }
         set { SetProperty(ref items, value); }

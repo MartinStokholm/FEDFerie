@@ -2,31 +2,48 @@
 using System.IO;
 using System.Xml.Serialization;
 using FerieWPFApp.Models;
+using Newtonsoft.Json;
 
 namespace FerieWPFApp.Data
 {
     internal class Repository
     {
         //Inspiration taken from the Agent 5 assignment solution
-
-        internal static ObservableCollection<PackingList> ReadFile(string fileName)
+        internal static ObservableCollection<PackingList> ReadFile(string filePath)
         {
-            // Create an instance of the XmlSerializer class and specify the type of object to deserialize.
-            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
-            TextReader reader = new StreamReader(fileName);
-            // Deserialize all the debtors.
-            var packingLists = (ObservableCollection<PackingList>)serializer.Deserialize(reader);
-            reader.Close();
-            return packingLists;
+            ObservableCollection<PackingList> packingListTemplates = new ObservableCollection<PackingList>();
+            if (filePath.EndsWith(".json"))
+            {
+                var json = File.ReadAllText(filePath);
+                packingListTemplates = JsonConvert.DeserializeObject<ObservableCollection<PackingList>>(json);
+            }
+            else if (filePath.EndsWith(".xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
+                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                {
+                    packingListTemplates = (ObservableCollection<PackingList>)serializer.Deserialize(fs);
+                }
+            }
+            return packingListTemplates;
         }
-        internal static void SaveFile(string fileName, ObservableCollection<PackingList> packingLists)
+        internal static void SaveFile(string filePath, ObservableCollection<PackingList> packingListTemplates)
         {
-            // Create an instance of the XmlSerializer class and specify the type of object to serialize.
-            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
-            TextWriter writer = new StreamWriter(fileName);
-            // Serialize all the debtors.
-            serializer.Serialize(writer, packingLists);
-            writer.Close();
+            if (filePath.EndsWith(".json"))
+            {
+                var jsonTemplates = JsonConvert.SerializeObject(packingListTemplates, Formatting.Indented);
+                File.WriteAllText(filePath, jsonTemplates);
+            }
+            else if (filePath.EndsWith(".xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<PackingList>));
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    serializer.Serialize(fs, packingListTemplates);
+                }
+            }
+            
+            
         }
     }
 }

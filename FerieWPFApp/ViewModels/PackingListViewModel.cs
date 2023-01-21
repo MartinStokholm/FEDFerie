@@ -15,7 +15,7 @@ public class PackingListViewModel : BindableBase
     {
         Title = title;
         CurrentPackingList = packingList;
-        CurrentItems = (ObservableCollection<Item>)packingList.Items;
+        CurrentItems = packingList.Items;
     }
     
     public string Title
@@ -35,8 +35,4 @@ public class PackingListViewModel : BindableBase
         get { return items ?? (items = new ObservableCollection<Item>()); }
         set { SetProperty(ref items, value); }
     }
-
- 
-
-
 }

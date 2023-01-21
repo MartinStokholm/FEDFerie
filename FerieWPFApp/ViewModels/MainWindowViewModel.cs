@@ -6,9 +6,12 @@ using FerieWPFApp.Views;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using FerieWPFApp.Data;
 using System.Windows;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using Formatting = System.Xml.Formatting;
 
 namespace FerieWPFApp.ViewModels
 {
@@ -72,35 +75,35 @@ namespace FerieWPFApp.ViewModels
             PackingLists = new ObservableCollection<PackingList>();
             PackingListTemplates = new ObservableCollection<PackingList>();
 
-            var festivalItems = new ObservableCollection<Item>()
-            {
-                new ("Tent", 1),
-                new ("Sleeping bag", 1),
-                new ("Sleeping mat", 1),
-                new ("Clothes", 1),
-                new ("Toiletries", 1),
-                new ("Food", 1),
-                new ("Water", 1),
-                new ("Torch", 1),
-                new ("First aid kit", 1),
-            };
-            PackingListTemplates.Add(new PackingList("Festival", festivalItems));
+            //var festivalItems = new ObservableCollection<Item>()
+            //{
+            //    new ("Tent", 1),
+            //    new ("Sleeping bag", 1),
+            //    new ("Sleeping mat", 1),
+            //    new ("Clothes", 1),
+            //    new ("Toiletries", 1),
+            //    new ("Food", 1),
+            //    new ("Water", 1),
+            //    new ("Torch", 1),
+            //    new ("First aid kit", 1),
+            //};
+            //PackingListTemplates.Add(new PackingList("Festival", festivalItems));
 
-            var SkiferieItems = new ObservableCollection<Item>()
-            {
-                new ("Skis", 1),
-                new ("Ski boots", 1),
-                new ("Ski poles", 1),
-                new ("Ski helmet", 1),
-                new ("Ski goggles", 1),
-                new ("Ski gloves", 1),
-                new ("Ski socks", 1),
-                new ("Ski pants", 1)
-            };
+            //var SkiferieItems = new ObservableCollection<Item>()
+            //{
+            //    new ("Skis", 1),
+            //    new ("Ski boots", 1),
+            //    new ("Ski poles", 1),
+            //    new ("Ski helmet", 1),
+            //    new ("Ski goggles", 1),
+            //    new ("Ski gloves", 1),
+            //    new ("Ski socks", 1),
+            //    new ("Ski pants", 1)
+            //};
            
-            PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
+            //PackingListTemplates.Add(new PackingList("Skiferie", SkiferieItems));
             
-            PackingListTemplates.Add(new PackingList("Storbyferie"));
+            //PackingListTemplates.Add(new PackingList("Storbyferie"));
         }
 
         public ObservableCollection<PackingList> PackingLists
@@ -131,7 +134,6 @@ namespace FerieWPFApp.ViewModels
         {
             // add new packing list as a clone of the current selected template
             var newPackingList = CurrentPackingListTemplate.Clone();
-            newPackingList.Items = CurrentPackingListTemplate.Items;
             PackingLists.Add(newPackingList);
         }
 
@@ -195,8 +197,8 @@ namespace FerieWPFApp.ViewModels
         {
             var dialog = new OpenFileDialog
             {
-                Filter = "documents|*.dbt|All Files|*.*",
-                DefaultExt = "dbt"
+                Filter = "json|*.json|All Files|*.*",
+                DefaultExt = "json"
             };
             if (filePath == "")
                 dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -209,7 +211,8 @@ namespace FerieWPFApp.ViewModels
                 FileName = Path.GetFileName(filePath);
                 try
                 {
-                    PackingLists = Repository.ReadFile(filePath);
+                    PackingLists.Clear();
+                    PackingListTemplates = Repository.ReadFile(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -222,8 +225,8 @@ namespace FerieWPFApp.ViewModels
         {
             var dialog = new SaveFileDialog
             {
-                Filter = "documents|*.dbt|All Files|*.*",
-                DefaultExt = "dbt"
+                Filter = "json|*.json|All Files|*.*",
+                DefaultExt = "json"
             };
             if (filePath == "")
                 dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -245,14 +248,15 @@ namespace FerieWPFApp.ViewModels
 
         private bool CanExecuteSaveFileCommand()
         {
-            return FileName != "" && PackingLists.Count > 0;
+            return FileName != "" && PackingListTemplates.Count > 0;
         }
 
         private void SaveFile()
         {
             try
             {
-                Repository.SaveFile(filePath, PackingLists);
+                Repository.SaveFile(filePath, PackingListTemplates);
+
             }
             catch (Exception ex)
             {
