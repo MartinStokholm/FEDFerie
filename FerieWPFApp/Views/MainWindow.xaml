@@ -12,24 +12,22 @@
         Title="{Binding Title}" >
 
     <DockPanel>
-            <Menu DockPanel.Dock="Top" Name="mainMenu">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_New" Command="{Binding NewFileCommand}"/>
-                    <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
-                    <MenuItem Header="_Save" Command="{Binding SaveCommand}"/>
-                    <MenuItem Header="Save _As" Command="{Binding SaveAsCommand}" />
-                </MenuItem>
-            </Menu>
-        
-            <StackPanel>
-                <TextBox
-                        Text="{Binding PackingList.Name}"
-                        Margin="5"
-                        MinHeight="25"
-                        MinWidth="75"
-                        Style="{StaticResource ResourceKey=CustomTextBoxStyle}"
-                />
-                <Button
+        <Menu DockPanel.Dock="Top" Name="mainMenu">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" Command="{Binding NewFileCommand}"/>
+                <MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
+                <MenuItem Header="_Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Save _As" Command="{Binding SaveAsCommand}" />
+            </MenuItem>
+        </Menu>
+        <StackPanel>
+            <WrapPanel HorizontalAlignment="Center">
+                <Label Content="Selected template:" HorizontalAlignment="Center"/>
+                <TextBox BorderThickness="0" Text="{Binding CurrentPackingListTemplate.Name}" />
+            </WrapPanel>
+                <WrapPanel HorizontalAlignment="Center">
+                <StackPanel>
+                    <Button
                     Content="Create Packing list" 
                     Command="{Binding CreatePackingListCommand}"
                     Margin="5" 
@@ -37,34 +35,70 @@
                     MinWidth="75"
                     Style="{StaticResource ResourceKey=CustomButtonStyle}"
                 />
-        </StackPanel>
-            
-            <DataGrid      
-                ItemsSource="{Binding Path=PackingLists}"
-                SelectedItem="{Binding Path=CurrentPackingList}"
-                SelectedIndex="{Binding Path=CurrentIndex}"
-                IsSynchronizedWithCurrentItem="True" 
-                Name="DataGrid1" 
-                Margin="10"
-                CanUserAddRows="False" 
-                CanUserDeleteRows="False" 
-                AutoGenerateColumns="False"
-                IsReadOnly="True" 
-            >
-                <DataGrid.Columns>
-                    <DataGridTextColumn 
-                        Header="Packing List Name"
-                        CanUserResize="False"
-                        Width="auto" 
-                        Binding="{Binding Path=Name}" />
-                    
-                </DataGrid.Columns>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <prism:InvokeCommandAction Command="{Binding OpenPackingListCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </DataGrid>
+                    <DataGrid      
+                    ItemsSource="{Binding Path=PackingLists}"
+                    SelectedItem="{Binding Path=CurrentPackingList}"
+                    IsSynchronizedWithCurrentItem="True" 
+                    Name="DataGrid1" 
+                    Margin="10"
+                    CanUserAddRows="False" 
+                    CanUserDeleteRows="False" 
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True" 
+                >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                            Header="My Packing Lists"
+                            CanUserResize="False"
+                            Width="auto" 
+                            Binding="{Binding Path=Name}" />
 
+                        </DataGrid.Columns>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <prism:InvokeCommandAction Command="{Binding OpenPackingListCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DataGrid>
+                </StackPanel>
+
+                <StackPanel>
+                    <Button
+                    Content="New Template" 
+                    Command="{Binding CreateTemplateCommand}"
+                    Margin="5" 
+                    MinHeight="25" 
+                    MinWidth="75"
+                    Style="{StaticResource ResourceKey=CustomButtonStyle}"
+                />
+
+                    <DataGrid      
+                    ItemsSource="{Binding Path=PackingListTemplates}"
+                    SelectedItem="{Binding Path=CurrentPackingListTemplate}"
+                    IsSynchronizedWithCurrentItem="True" 
+                    Name="DataGrid2" 
+                    Margin="10"
+                    CanUserAddRows="False" 
+                    CanUserDeleteRows="False" 
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True" 
+                >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn 
+                            Header="My Templates"
+                            CanUserResize="False"
+                            Width="auto" 
+                            Binding="{Binding Path=Name}" />
+
+                        </DataGrid.Columns>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <prism:InvokeCommandAction Command="{Binding OpenTemplateCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DataGrid>
+                </StackPanel>
+            </WrapPanel>
+        </StackPanel>
     </DockPanel>
 </Window>

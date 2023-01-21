@@ -39,7 +39,9 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="24"/>
             <Setter Property="Padding" Value="5"/>
-
+            <Setter Property="BorderBrush" Value="RoyalBlue"></Setter>
+           
+            
             <Style.Triggers>
                 <Trigger Property="Button.IsMouseOver" Value="True">
                     <Setter Property="Effect" >

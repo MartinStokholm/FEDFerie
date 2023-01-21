@@ -7,14 +7,17 @@ namespace FerieWPFApp.Models;
 public class PackingList : BindableBase
 {
     private string name = "";
-    private List<Item> items = new();
+    private IEnumerable<Item> items;
 
-    public PackingList()
+    public PackingList() { }
+
+    public PackingList(string name)
     {
-       
+        Name = name;
+        Items = items;
     }
-    
-    public PackingList(string name, List<Item> items)
+   
+    public PackingList(string name, IEnumerable<Item> items)
     {
         Name = name;
         Items = items; 
@@ -30,7 +33,7 @@ public class PackingList : BindableBase
         set { SetProperty(ref name, value); }
     }
 
-    public List<Item> Items
+    public IEnumerable<Item> Items
     {
         get { return items; }
         set { SetProperty(ref items, value); }
